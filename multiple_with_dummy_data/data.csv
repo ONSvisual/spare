@@ -1,0 +1,37 @@
+category,date,Decile_1,Decile_2
+Mining and Quarrying,01 2016,0.49,2.36
+Mining and Quarrying,04 2016,-5.44,4.24
+Mining and Quarrying,07 2016,-4.66,2.51
+Mining and Quarrying,10 2016,5.67,-6.88
+Mining and Quarrying,01 2017,-6.17,5.89
+Mining and Quarrying,04 2017,-5.84,5.16
+Mining and Quarrying,07 2017,5.49,-4.65
+Mining and Quarrying,10 2017,0.74,-7.04
+Mining and Quarrying,01 2018,7.28,2
+Manufacturing,01 2016,0.49,-6.85
+Manufacturing,04 2016,-5.44,3.48
+Manufacturing,07 2016,-4.66,-1.08
+Manufacturing,10 2016,5.67,1.38
+Manufacturing,01 2017,-6.17,-1.95
+Manufacturing,04 2017,-5.84,6.22
+Manufacturing,07 2017,5.49,1.4
+Manufacturing,10 2017,0.74,2.58
+Manufacturing,01 2018,7.28,0.76
+"Electricity, gas, steam and air conditioning supply",01 2016,0.49,5.62
+"Electricity, gas, steam and air conditioning supply",04 2016,-5.44,5.07
+"Electricity, gas, steam and air conditioning supply",07 2016,-4.66,-2.15
+"Electricity, gas, steam and air conditioning supply",10 2016,5.67,2.59
+"Electricity, gas, steam and air conditioning supply",01 2017,-6.17,-2.92
+"Electricity, gas, steam and air conditioning supply",04 2017,-5.84,7.3
+"Electricity, gas, steam and air conditioning supply",07 2017,5.49,1.92
+"Electricity, gas, steam and air conditioning supply",10 2017,0.74,5.62
+"Electricity, gas, steam and air conditioning supply",01 2018,7.28,3.21
+"Water supply; sewerage, waste managementand remediation activities",01 2016,0.49,2.97
+"Water supply; sewerage, waste managementand remediation activities",04 2016,-5.44,-4.54
+"Water supply; sewerage, waste managementand remediation activities",07 2016,-4.66,0.26
+"Water supply; sewerage, waste managementand remediation activities",10 2016,5.67,-7.35
+"Water supply; sewerage, waste managementand remediation activities",01 2017,-6.17,1.56
+"Water supply; sewerage, waste managementand remediation activities",04 2017,-5.84,-2.02
+"Water supply; sewerage, waste managementand remediation activities",07 2017,5.49,-3.8
+"Water supply; sewerage, waste managementand remediation activities",10 2017,0.74,4.7
+"Water supply; sewerage, waste managementand remediation activities",01 2018,7.28,2.14

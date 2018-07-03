@@ -1,0 +1,5 @@
+topic,measure,measure_code,margin_t,margin_r,margin_b,margin_l,ymin,ymax
+,Mining and Quarrying,mining,10,15,35,35,-10,8
+,Manufacturing,manufacturing,10,15,35,35,-10,8
+,"Electricity, gas, steam and air conditioning supply",electricity,10,15,35,35,-10,8
+,"Water supply; sewerage, waste management and remediation activities",water,10,15,35,35,-10,8
