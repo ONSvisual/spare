@@ -10,7 +10,7 @@
     })(window,document,'script','dataLayer','GTM-MBCBVQS');</script>
     <!-- End Google Tag Manager -->
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,600' rel='stylesheet' type='text/css'>
-    <title>Title goes here</title>
+    <title>GDP small multiples</title>
 
     <meta name="description" content="">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
@@ -138,22 +138,22 @@ d3.select("#submitbut1").on("click",function(d){
 	     'selected': 'imagedownload'
 	   })
 })
-	
+
 d3.select("#submitbut2").on("click",function(d){
 	dataLayer.push({
 	     'event': 'buttonClicked',
 	     'selected': 'csvdownload'
 	   })
 })
-	
+
 d3.select("#submitbut3").on("click",function(d){
 	dataLayer.push({
 	     'event': 'buttonClicked',
 	     'selected': 'xlsdownload'
 	   })
 })
-	
-	
+
+
 var legend = d3.select('#legend').append('svg').attr("height",30)
 .append("g")
 .attr("id", "legend2");
