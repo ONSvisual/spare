@@ -64,7 +64,7 @@
     			margin-top:8px;
     		}
 
-    #submitbut {
+    .submitbut {
 			background-color:#0F8243;
 			display:block;
 			width:200px;
@@ -79,7 +79,7 @@
 			margin-right:6px;
 			float:left;
 		}
-		#submitbut:hover {
+		.submitbut:hover {
 			cursor:hand;
 			cursor:pointer;
 			display:block;
@@ -122,9 +122,9 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
   <div id="ChartFooterDiv">Download this chart</div>
 
-            <a href="fallback.png" target="_blank"><div id="submitbut">Image</div></a>
-            <a href="data.csv" target="_blank"><div id="submitbut">.csv</div></a>
-            <a href="data.xls" target="_blank"><div id="submitbut">.xls</div></a>
+            <a href="fallback.png" target="_blank"><div class="submitbut" id="submitbut1">Image</div></a>
+            <a href="data.csv" target="_blank"><div class="submitbut" id="submitbut1">.csv</div></a>
+            <a href="data.xls" target="_blank"><div class="submitbut" id="submitbut1">.xls</div></a>
 
 
 
@@ -132,6 +132,28 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         </div>
 <script>
 
+d3.select("#submitbut1").on("click",function(d){
+	dataLayer.push({
+	     'event': 'buttonClicked',
+	     'selected': 'imagedownload'
+	   })
+})
+	
+d3.select("#submitbut2").on("click",function(d){
+	dataLayer.push({
+	     'event': 'buttonClicked',
+	     'selected': 'csvdownload'
+	   })
+})
+	
+d3.select("#submitbut3").on("click",function(d){
+	dataLayer.push({
+	     'event': 'buttonClicked',
+	     'selected': 'xlsdownload'
+	   })
+})
+	
+	
 var legend = d3.select('#legend').append('svg').attr("height",30)
 .append("g")
 .attr("id", "legend2");
