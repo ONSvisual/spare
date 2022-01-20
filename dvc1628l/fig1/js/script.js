@@ -3,7 +3,6 @@ Modernizr.on('webgl',function(results){
   if(results){
     //setup pymjs
     var pymChild = new pym.Child();
-    var rosaenlg_en_US = window.rosaenlg_en_US
     var regionLookup = {};
     var dateLookup = {};
     var decileEPC = {
