@@ -1,588 +1,586 @@
 //test if browser supports webGL
-if (Modernizr.webgl) {
-
-  //setup pymjs
-  var pymChild = new pym.Child();
-  var rosaenlg_en_US = window.rosaenlg_en_US
-  var regionLookup = {};
-  var dateLookup = {};
-  var decileEPC = {
-    'England': {
-      1: .4660,
-      2: .4650,
-      3: .4610,
-      4: .4300,
-      5: .4140,
-      6: .4130,
-      7: .3970,
-      8: .3950,
-      9: .3870,
-      10: .3620
-    },
-    'Wales': {
-      1: .4490,
-      2: .4130,
-      3: .3810,
-      4: .3480,
-      5: .3430,
-      6: .3420,
-      7: .3250,
-      8: .3510,
-      9: .4100,
-      10: .3490
+Modernizr.on('webgl',function(results){
+  if(results){
+    //setup pymjs
+    var pymChild = new pym.Child();
+    var rosaenlg_en_US = window.rosaenlg_en_US
+    var regionLookup = {};
+    var dateLookup = {};
+    var decileEPC = {
+      'England': {
+        1: .4660,
+        2: .4650,
+        3: .4610,
+        4: .4300,
+        5: .4140,
+        6: .4130,
+        7: .3970,
+        8: .3950,
+        9: .3870,
+        10: .3620
+      },
+      'Wales': {
+        1: .4490,
+        2: .4130,
+        3: .3810,
+        4: .3480,
+        5: .3430,
+        6: .3420,
+        7: .3250,
+        8: .3510,
+        9: .4100,
+        10: .3490
+      }
     }
-  }
-  var regionEPC = {
-    'East Midlands': .4030,
-    'East of England': .4280,
-    'London':	.4850,
-    'North East':	.4140,
-    'North West':	.4060,
-    'South East':	.4370,
-    'South West':	.4210,
-    'Wales': .3730,
-    'West Midlands': .3750,
-    'Yorkshire and The Humber': .3770
-  }
+    var regionEPC = {
+      'East Midlands': .4030,
+      'East of England': .4280,
+      'London':	.4850,
+      'North East':	.4140,
+      'North West':	.4060,
+      'South East':	.4370,
+      'South West':	.4210,
+      'Wales': .3730,
+      'West Midlands': .3750,
+      'Yorkshire and The Humber': .3770
+    }
 
 
-  //Load data and config file
-  d3.queue()
-    .defer(d3.json, "data/config.json")
-    .defer(d3.csv, "data/data.csv")
-    .defer(d3.csv, "data/epcs.csv")
-    .defer(d3.csv, "data/LSOA_LU.csv")
-    .await(ready);
+    //Load data and config file
+    d3.queue()
+      .defer(d3.json, "data/config.json")
+      .defer(d3.csv, "data/data.csv")
+      .defer(d3.csv, "data/epcs.csv")
+      .defer(d3.csv, "data/LSOA_LU.csv")
+      .await(ready);
 
-  function ready(error, config, data, epcs, lsoaRegion) {
+    function ready(error, config, data, epcs, lsoaRegion) {
 
-    //turn csv data into json format
-    json = csv2json(epcs);
+      //turn csv data into json format
+      json = csv2json(epcs);
 
-    lsoaRegion.forEach(d => {
-      regionLookup[d['lsoa11cd']] = {'rName': d['Region'], 'rCode': d['RGN11CD'], 'lName': d['LA name'], 'lCode': d['LA code'], 'decile': d['Deprivation decile'], 'name': d['LSOA name'], 'country': d['Country']};
-    });
-
-    epcs.forEach(d => {
-      dateLookup[d['areacd']] = {'value': +d['value'], 'b1900': d['b1900']/100, 'a2012': d['a2012']/100 }
-    });
-
-    getCodes('EC1A 4HJ')
-    var width;
-
-    $(window).ready(function() {
-      //this will get the default screen width
-      width = parent.document.body.clientWidth; //this will get the width of your screen.
-      if (width>767) {
-        $("#robo-text > p").css({"font-size": "18px"});
-        $("#text-cont").css({"margin-left": "16px !important", "margin-right": "48px", "width": "640px"});
-      }
-      if (width>991) {
-        $("#text-cont").css({"margin-right": "32px"});
-      }
-      pymChild.sendHeight();
-    });
-
-    var intervalId = window.setInterval(function(){
-      width = parent.document.body.clientWidth;
-      if (width>767) {
-        $("#robo-text > p").css({"font-size": "18px"});
-        $("#text-cont").css({"margin-left": "16px !important", "margin-right": "48px", "width": "640px"});
-      }
-      if (width>991) {
-        $("#text-cont").css({"margin-right": "32px"});
-      }
-      if (width<768) {
-        $("#robo-text > p").css({"font-size": "16px"});
-        $("#text-cont").css({"margin-left": "0px", "margin-right": "0px", "width": "100%"});
-      }
-      pymChild.sendHeight();
-    }, 500);
-
-
-    //this is when you resize the screen
-    $(parent.window).resize(function() {
-      width = parent.document.body.clientWidth;
-      //this will get the width when you resize the screen.
-
-      if ((width>767)&(width<992)) {
-        $("#robo-text > p").css({"font-size": "18px"});
-        $("#text-cont").css({"margin-left": "16px !important", "margin-right": "48px", "width": "640px"});
-      }
-      if (width>991) {
-        $("#text-cont").css({"margin-right": "32px"});
-      }
-      if (width<768) {
-        $("#robo-text > p").css({"font-size": "16px"});
-        $("#text-cont").css({"margin-left": "0px", "margin-right": "0px", "width": "100%"});
-      }
-      pymChild.sendHeight();
-    });
-
-
-
-    //Set up global variables
-    dvc = config.ons;
-    hoveredId = null;
-
-    //set title of page
-    document.title = dvc.maptitle;
-
-    //Set up number formats
-    displayformat = d3.format(",." + dvc.displaydecimals + "f");
-    legendformat = d3.format(",");
-
-      //set up basemap
-      map = new mapboxgl.Map({
-        container: 'map', // container id
-        style: 'data/style.json', //stylesheet location
-        center: [-0.12, 51.5], // starting position 51.5074° N, 0.1278
-        maxBounds: [[-12.836, 49.441], [7.604, 55.945]],//limit it to just E&W
-        zoom: 12, // starting zoom
-        minZoom: 4,
-        maxZoom: 16.99, //
-        attributionControl: false
+      lsoaRegion.forEach(d => {
+        regionLookup[d['lsoa11cd']] = {'rName': d['Region'], 'rCode': d['RGN11CD'], 'lName': d['LA name'], 'lCode': d['LA code'], 'decile': d['Deprivation decile'], 'name': d['LSOA name'], 'country': d['Country']};
       });
-      //add fullscreen option
-      map.addControl(new mapboxgl.FullscreenControl());
 
-      // Add zoom and rotation controls to the map.
-      map.addControl(new mapboxgl.NavigationControl());
+      epcs.forEach(d => {
+        dateLookup[d['areacd']] = {'value': +d['value'], 'b1900': d['b1900']/100, 'a2012': d['a2012']/100 }
+      });
 
-      // Disable map rotation using right click + drag
-      map.dragRotate.disable();
+      getCodes('EC1A 4HJ')
+      var width;
 
-      // Disable map rotation using touch rotation gesture
-      map.touchZoomRotate.disableRotation();
-
-      // Add geolocation controls to the map.
-      map.addControl(new mapboxgl.GeolocateControl({
-        positionOptions: {
-          enableHighAccuracy: true
+      $(window).ready(function() {
+        //this will get the default screen width
+        width = parent.document.body.clientWidth; //this will get the width of your screen.
+        if (width>767) {
+          $("#robo-text > p").css({"font-size": "18px"});
+          $("#text-cont").css({"margin-left": "16px !important", "margin-right": "48px", "width": "640px"});
         }
-      }));
+        if (width>991) {
+          $("#text-cont").css({"margin-right": "32px"});
+        }
+        pymChild.sendHeight();
+      });
 
-      //add compact attribution
-      map.addControl(new mapboxgl.AttributionControl({
-        compact: true,
-        // add zoomstack attribution
-        customAttribution: "Contains OS data © Crown copyright and database right (" + new Date().getFullYear() + ")"
-      }));
+      var intervalId = window.setInterval(function(){
+        width = parent.document.body.clientWidth;
+        if (width>767) {
+          $("#robo-text > p").css({"font-size": "18px"});
+          $("#text-cont").css({"margin-left": "16px !important", "margin-right": "48px", "width": "640px"});
+        }
+        if (width>991) {
+          $("#text-cont").css({"margin-right": "32px"});
+        }
+        if (width<768) {
+          $("#robo-text > p").css({"font-size": "16px"});
+          $("#text-cont").css({"margin-left": "0px", "margin-right": "0px", "width": "100%"});
+        }
+        pymChild.sendHeight();
+      }, 500);
 
-      //define mouse pointer
-      map.getCanvasContainer().style.cursor = 'pointer';
 
-      addFullscreen();
+      //this is when you resize the screen
+      $(parent.window).resize(function() {
+        width = parent.document.body.clientWidth;
+        //this will get the width when you resize the screen.
 
-      // if breaks is jenks or equal
-      // get all the numbers, filter out the blanks, and then sort them
-      breaks = generateBreaks(data, dvc);
+        if ((width>767)&(width<992)) {
+          $("#robo-text > p").css({"font-size": "18px"});
+          $("#text-cont").css({"margin-left": "16px !important", "margin-right": "48px", "width": "640px"});
+        }
+        if (width>991) {
+          $("#text-cont").css({"margin-right": "32px"});
+        }
+        if (width<768) {
+          $("#robo-text > p").css({"font-size": "16px"});
+          $("#text-cont").css({"margin-left": "0px", "margin-right": "0px", "width": "100%"});
+        }
+        pymChild.sendHeight();
+      });
 
-      //Load colours
-      if (typeof dvc.varcolour === 'string') {
-        colour = colorbrewer[dvc.varcolour][dvc.numberBreaks];
-      } else {
-        colour = dvc.varcolour;
-      }
 
-      //set up d3 color scales
-      color = d3.scaleThreshold()
-        .domain(breaks.slice(1))
-        .range(colour);
 
-      //now ranges are set we can call draw the key
-      createKey(dvc);
+      //Set up global variables
+      dvc = config.ons;
+      hoveredId = null;
 
-      map.on('load', function() {
+      //set title of page
+      document.title = dvc.maptitle;
 
-        // Add boundaries tileset
-        map.addSource('lsoa-tiles', {
-          type: 'vector',
-          tiles: ['https://cdn.ons.gov.uk/maptiles/administrative/lsoa/v1/boundaries/{z}/{x}/{y}.pbf'],
-          "promoteId": {
-            "boundaries": "AREACD"
-          },
-          minzoom:4,
-          maxzoom: 12,
+      //Set up number formats
+      displayformat = d3.format(",." + dvc.displaydecimals + "f");
+      legendformat = d3.format(",");
+
+        //set up basemap
+        map = new mapboxgl.Map({
+          container: 'map', // container id
+          style: 'data/style.json', //stylesheet location
+          center: [-0.12, 51.5], // starting position 51.5074° N, 0.1278
+          maxBounds: [[-12.836, 49.441], [7.604, 55.945]],//limit it to just E&W
+          zoom: 12, // starting zoom
+          minZoom: 4,
+          maxZoom: 16.99, //
+          attributionControl: false
         });
+        //add fullscreen option
+        map.addControl(new mapboxgl.FullscreenControl());
 
-        map.addLayer({
-          id: 'lsoa-boundaries',
-          type: 'fill',
-          source: 'lsoa-tiles',
-          'source-layer': 'boundaries',
-          minzoom:4,
-          maxzoom:17,
-          paint: {
-            'fill-color': ['case',
-              ['!=', ['feature-state', 'colour'], null],
-              ['feature-state', 'colour'],
-              'rgba(255, 255, 255, 0)'
-            ],
-            'fill-opacity': [
-              'interpolate',
-              ['linear'],
-              ['zoom'],
-              8,
-              0.9,
-              9,
-              0.1
-            ]
+        // Add zoom and rotation controls to the map.
+        map.addControl(new mapboxgl.NavigationControl());
+
+        // Disable map rotation using right click + drag
+        map.dragRotate.disable();
+
+        // Disable map rotation using touch rotation gesture
+        map.touchZoomRotate.disableRotation();
+
+        // Add geolocation controls to the map.
+        map.addControl(new mapboxgl.GeolocateControl({
+          positionOptions: {
+            enableHighAccuracy: true
           }
-        }, 'place_suburb');
+        }));
 
-        // Add buildings tileset
-        map.addSource('building-tiles', {
-          type: 'vector',
-          tiles: ['https://cdn.ons.gov.uk/maptiles/administrative/lsoa/v1/buildings/{z}/{x}/{y}.pbf'],
-          promoteId: {
-            buildings: "AREACD"
-          },
-          minzoom: 8,
-          maxzoom: 12,
-        });
+        //add compact attribution
+        map.addControl(new mapboxgl.AttributionControl({
+          compact: true,
+          // add zoomstack attribution
+          customAttribution: "Contains OS data © Crown copyright and database right (" + new Date().getFullYear() + ")"
+        }));
 
-        // Add layer from the vector tile source with data-driven style
-        map.addLayer({
-          id: 'lsoa-building',
-          type: 'fill',
-          source: 'building-tiles',
-          'source-layer': 'buildings',
-          minzoom:8,
-          maxzoom:17,
-          paint: {
-            'fill-color': ['case',
-              ['!=', ['feature-state', 'colour'], null],
-              ['feature-state', 'colour'],
-              'rgba(255, 255, 255, 0)'
-            ],
-            'fill-opacity': 0.8
-          }
-        }, 'place_suburb');
+        //define mouse pointer
+        map.getCanvasContainer().style.cursor = 'pointer';
 
-        //loop the json data and set feature state for building layer and boundary layer
-        for (var key in json) {
-          // setFeatureState for buildlings
-          map.setFeatureState({
-            source: 'building-tiles',
-            sourceLayer: 'buildings',
-            id: key
-          }, {
-            colour: getColour(json[key])
+        addFullscreen();
+
+        // if breaks is jenks or equal
+        // get all the numbers, filter out the blanks, and then sort them
+        breaks = generateBreaks(data, dvc);
+
+        //Load colours
+        if (typeof dvc.varcolour === 'string') {
+          colour = colorbrewer[dvc.varcolour][dvc.numberBreaks];
+        } else {
+          colour = dvc.varcolour;
+        }
+
+        //set up d3 color scales
+        color = d3.scaleThreshold()
+          .domain(breaks.slice(1))
+          .range(colour);
+
+        //now ranges are set we can call draw the key
+        createKey(dvc);
+
+        map.on('load', function() {
+
+          // Add boundaries tileset
+          map.addSource('lsoa-tiles', {
+            type: 'vector',
+            tiles: ['https://cdn.ons.gov.uk/maptiles/administrative/lsoa/v1/boundaries/{z}/{x}/{y}.pbf'],
+            "promoteId": {
+              "boundaries": "AREACD"
+            },
+            minzoom:4,
+            maxzoom: 12,
           });
 
-          //setFeatureState for boundaries
-          map.setFeatureState({
+          map.addLayer({
+            id: 'lsoa-boundaries',
+            type: 'fill',
             source: 'lsoa-tiles',
-            sourceLayer: 'boundaries',
-            id: key
-          }, {
-            colour: getColour(json[key])
+            'source-layer': 'boundaries',
+            minzoom:4,
+            maxzoom:17,
+            paint: {
+              'fill-color': ['case',
+                ['!=', ['feature-state', 'colour'], null],
+                ['feature-state', 'colour'],
+                'rgba(255, 255, 255, 0)'
+              ],
+              'fill-opacity': [
+                'interpolate',
+                ['linear'],
+                ['zoom'],
+                8,
+                0.9,
+                9,
+                0.1
+              ]
+            }
+          }, 'place_suburb');
+
+          // Add buildings tileset
+          map.addSource('building-tiles', {
+            type: 'vector',
+            tiles: ['https://cdn.ons.gov.uk/maptiles/administrative/lsoa/v1/buildings/{z}/{x}/{y}.pbf'],
+            promoteId: {
+              buildings: "AREACD"
+            },
+            minzoom: 8,
+            maxzoom: 12,
           });
+
+          // Add layer from the vector tile source with data-driven style
+          map.addLayer({
+            id: 'lsoa-building',
+            type: 'fill',
+            source: 'building-tiles',
+            'source-layer': 'buildings',
+            minzoom:8,
+            maxzoom:17,
+            paint: {
+              'fill-color': ['case',
+                ['!=', ['feature-state', 'colour'], null],
+                ['feature-state', 'colour'],
+                'rgba(255, 255, 255, 0)'
+              ],
+              'fill-opacity': 0.8
+            }
+          }, 'place_suburb');
+
+          //loop the json data and set feature state for building layer and boundary layer
+          for (var key in json) {
+            // setFeatureState for buildlings
+            map.setFeatureState({
+              source: 'building-tiles',
+              sourceLayer: 'buildings',
+              id: key
+            }, {
+              colour: getColour(json[key])
+            });
+
+            //setFeatureState for boundaries
+            map.setFeatureState({
+              source: 'lsoa-tiles',
+              sourceLayer: 'boundaries',
+              id: key
+            }, {
+              colour: getColour(json[key])
+            });
+          }
+
+          //outlines around LSOA
+          map.addLayer({
+            id: "lsoa-outlines",
+            type: "line",
+            source: 'lsoa-tiles',
+            minzoom: 4,
+            maxzoom: 17,
+            "source-layer": "boundaries",
+            "background-color": "#ccc",
+            paint: {
+              'line-color': 'orange',
+              "line-width": 3,
+              "line-opacity": [
+                'case',
+                ['boolean', ['feature-state', 'hover'], false],
+                1,
+                0
+              ]
+            },
+          }, 'place_suburb');
+
+          //get location on click
+          d3.select(".mapboxgl-ctrl-geolocate").on("click", geolocate);
+
+        });
+
+      // clears search box on click
+      // $(".search-control").click(function() {
+      //   $(".search-control").val('');
+      // });
+
+      // if you push enter while in the box
+      d3.select(".search-control").on("keydown", function() {
+        if (d3.event.keyCode === 13) {
+          d3.event.preventDefault();
+          d3.event.stopPropagation();
+          getCodes($(".search-control").val());
         }
-
-        //outlines around LSOA
-        map.addLayer({
-          id: "lsoa-outlines",
-          type: "line",
-          source: 'lsoa-tiles',
-          minzoom: 4,
-          maxzoom: 17,
-          "source-layer": "boundaries",
-          "background-color": "#ccc",
-          paint: {
-            'line-color': 'orange',
-            "line-width": 3,
-            "line-opacity": [
-              'case',
-              ['boolean', ['feature-state', 'hover'], false],
-              1,
-              0
-            ]
-          },
-        }, 'place_suburb');
-
-        //get location on click
-        d3.select(".mapboxgl-ctrl-geolocate").on("click", geolocate);
-
       });
-
-    // clears search box on click
-    // $(".search-control").click(function() {
-    //   $(".search-control").val('');
-    // });
-
-    // if you push enter while in the box
-    d3.select(".search-control").on("keydown", function() {
-      if (d3.event.keyCode === 13) {
-        d3.event.preventDefault();
-        d3.event.stopPropagation();
-        getCodes($(".search-control").val());
-      }
-    });
-    //if you click on the search icon, find the postcode
-    $("#submitPost").click(function(event) {
-      event.preventDefault();
-      event.stopPropagation();
-      getCodes($(".search-control").val());
-    });
-
-    //if you focus on the search icon and push space or enter
-    d3.select("#submitPost").on("keydown", function() {
-      if (d3.event.keyCode === 13 || d3.event.keyCode === 32) {
+      //if you click on the search icon, find the postcode
+      $("#submitPost").click(function(event) {
         event.preventDefault();
         event.stopPropagation();
         getCodes($(".search-control").val());
-      }
-    });
+      });
 
-    // When the user moves their mouse over the lsoa boundaries layer, we'll update the
-    // feature state for the feature under the mouse.
-    map.on('mousemove', 'lsoa-boundaries', onMove);
+      //if you focus on the search icon and push space or enter
+      d3.select("#submitPost").on("keydown", function() {
+        if (d3.event.keyCode === 13 || d3.event.keyCode === 32) {
+          event.preventDefault();
+          event.stopPropagation();
+          getCodes($(".search-control").val());
+        }
+      });
 
-    // When the mouse leaves the lsoa boundaries layer, update the feature state of the
-    // previously hovered feature.
-    map.on('mouseleave', 'lsoa-boundaries', onLeave);
-
-    map.on('click', 'lsoa-boundaries', onClick);
-
-    function onClick(e) {
-      disableMouseEvents();
-      highlightArea(e.features);
-      addClearBox();
-    }
-
-    function addClearBox() {
-      if(d3.select('#clearbutton').empty()){
-        d3.select('#keydiv').append('button').attr('id', 'clearbutton').attr('class', 'clear').text("Clear area").attr('tabindex', 0);
-        d3.select('#clearbutton').on('click', removeClearBox);
-        d3.select("#clearbutton").on("keydown", function() {
-          if (d3.event.keyCode === 13 || d3.event.keyCode === 32) {
-            event.preventDefault();
-            event.stopPropagation();
-            removeClearBox();
-          }
-        });
-      }
-    }
-
-    function removeClearBox() {
-      d3.select("#clearbutton").remove();
-      enableMouseEvents();
-      hideaxisVal();
-      unhighlightArea();
-    }
-
-    function disableMouseEvents() {
-      map.off('mousemove', 'lsoa-boundaries', onMove);
-      map.off('mouseleave', 'lsoa-boundaries', onLeave);
-    }
-    //
-    function enableMouseEvents() {
+      // When the user moves their mouse over the lsoa boundaries layer, we'll update the
+      // feature state for the feature under the mouse.
       map.on('mousemove', 'lsoa-boundaries', onMove);
+
+      // When the mouse leaves the lsoa boundaries layer, update the feature state of the
+      // previously hovered feature.
       map.on('mouseleave', 'lsoa-boundaries', onLeave);
-    }
 
-    function createKey(dvc) {
-      keywidth = d3.select("#keydiv").node().getBoundingClientRect().width;
+      map.on('click', 'lsoa-boundaries', onClick);
 
-      var svgkey = d3.select("#keydiv")
-        .attr("width", keywidth);
-
-      d3.select("#keydiv")
-        .style("font-family", "Open Sans")
-        .style("font-size", "14px")
-        .append("p")
-        .attr("id", "keyvalue")
-        .style("font-size", "18px")
-        .style("margin-top", "10px")
-        .style("margin-bottom", "5px")
-        .style("margin-left", "10px")
-        .text("");
-
-      d3.select("#keydiv")
-        .append("p")
-        .attr("id", "keyunit")
-        .style("margin-top", "5px")
-        .style("margin-bottom", "5px")
-        .style("margin-left", "10px")
-        .text(dvc.varunit);
-
-      stops = d3.zip(breaks,colour);
-
-      divs = svgkey.selectAll("div")
-        .data(breaks)
-        .enter()
-        .append("div");
-
-      divs.append("div")
-        .style("height", "20px")
-        .style("width", "10px")
-        .attr("float", "left")
-        .style("display", "inline-block")
-        .style("background-color", function(d, i) {
-          if (i != breaks.length - 1) {
-            return stops[i][1];
-          } else {
-            return dvc.nullColour;
-          }
-        });
-
-      divs.append("p")
-        .attr("float", "left")
-        .style("padding-left", "5px")
-        .style("margin", "0px")
-        .style("display", "inline-block")
-        .style("position", "relative")
-        .style("top", "-5px")
-        .text(function(d, i) {
-          if (i != breaks.length - 1) {
-            return "" + displayformat(breaks[i]) + "% to " + displayformat(breaks[i + 1] - 1)+"%";
-          } else {
-            return "No Data";
-          }
-        });
-    } // Ends create key
-
-    function addFullscreen() {
-      currentBody = d3.select("#map").style("height");
-      d3.select(".mapboxgl-ctrl-fullscreen").on("click", setbodyheight);
-    }
-
-    function setbodyheight() {
-      d3.select("#map").style("height", "100%");
-
-      document.addEventListener('webkitfullscreenchange', exitHandler, false);
-      document.addEventListener('mozfullscreenchange', exitHandler, false);
-      document.addEventListener('fullscreenchange', exitHandler, false);
-      document.addEventListener('MSFullscreenChange', exitHandler, false);
-
-    }
-
-
-    function exitHandler() {
-      if (document.webkitIsFullScreen === false) {
-        shrinkbody();
-      } else if (document.mozFullScreen === false) {
-        shrinkbody();
-      } else if (document.msFullscreenElement === false) {
-        shrinkbody();
+      function onClick(e) {
+        disableMouseEvents();
+        highlightArea(e.features);
+        addClearBox();
       }
-    }
 
-    function shrinkbody() {
-      d3.select("#map").style("height", currentBody);
-      pymChild.sendHeight();
-    }
-
-    function geolocate() {
-      dataLayer.push({
-        'event': 'geoLocate',
-        'selected': 'geolocate'
-      });
-
-      var options = {
-        enableHighAccuracy: true,
-        timeout: 5000,
-        maximumAge: 0
-      };
-
-      navigator.geolocation.getCurrentPosition(success, error, options);
-    }
-
-    function getCodes(myPC) {
-
-      //first show the remove cross
-      d3.select(".search-control").append("abbr").attr("class", "postcode");
-
-      dataLayer.push({
-        'event': 'geoLocate',
-        'selected': 'postcode'
-      });
-
-      var myURIstring = encodeURI("https://api.postcodes.io/postcodes/" + myPC);
-      $.support.cors = true;
-      $.ajax({
-        type: "GET",
-        crossDomain: true,
-        dataType: "jsonp",
-        url: myURIstring,
-        error: function(xhr, ajaxOptions, thrownError) {
-          d3.select("#keyvalue").text("Enter a valid postcode");
-          d3.select("#screenreadertext").text("Enter a valid postcode");
-          d3.select("#robo-text").html(function() {
-            return 'Please enter a valid postcode'
-          });
-        },
-        success: function(data1) {
-          if (data1.status == 200) {
-            if ((data1.result.country=="England") | (data1.result.country=="Wales")) {
-              lat = data1.result.latitude;
-              lng = data1.result.longitude;
-              successpc(lat, lng);
-            } else {
-              d3.select("#keyvalue").text("Enter a valid postcode");
-              d3.select("#screenreadertext").text("Enter a valid postcode");
-              d3.select("#robo-text").html(function() {
-                return 'Please enter an English or Welsh postcode'
-              });
+      function addClearBox() {
+        if(d3.select('#clearbutton').empty()){
+          d3.select('#keydiv').append('button').attr('id', 'clearbutton').attr('class', 'clear').text("Clear area").attr('tabindex', 0);
+          d3.select('#clearbutton').on('click', removeClearBox);
+          d3.select("#clearbutton").on("keydown", function() {
+            if (d3.event.keyCode === 13 || d3.event.keyCode === 32) {
+              event.preventDefault();
+              event.stopPropagation();
+              removeClearBox();
             }
-          } else {
+          });
+        }
+      }
+
+      function removeClearBox() {
+        d3.select("#clearbutton").remove();
+        enableMouseEvents();
+        hideaxisVal();
+        unhighlightArea();
+      }
+
+      function disableMouseEvents() {
+        map.off('mousemove', 'lsoa-boundaries', onMove);
+        map.off('mouseleave', 'lsoa-boundaries', onLeave);
+      }
+      //
+      function enableMouseEvents() {
+        map.on('mousemove', 'lsoa-boundaries', onMove);
+        map.on('mouseleave', 'lsoa-boundaries', onLeave);
+      }
+
+      function createKey(dvc) {
+        keywidth = d3.select("#keydiv").node().getBoundingClientRect().width;
+
+        var svgkey = d3.select("#keydiv")
+          .attr("width", keywidth);
+
+        d3.select("#keydiv")
+          .style("font-family", "Open Sans")
+          .style("font-size", "14px")
+          .append("p")
+          .attr("id", "keyvalue")
+          .style("font-size", "18px")
+          .style("margin-top", "10px")
+          .style("margin-bottom", "5px")
+          .style("margin-left", "10px")
+          .text("");
+
+        d3.select("#keydiv")
+          .append("p")
+          .attr("id", "keyunit")
+          .style("margin-top", "5px")
+          .style("margin-bottom", "5px")
+          .style("margin-left", "10px")
+          .text(dvc.varunit);
+
+        stops = d3.zip(breaks,colour);
+
+        divs = svgkey.selectAll("div")
+          .data(breaks)
+          .enter()
+          .append("div");
+
+        divs.append("div")
+          .style("height", "20px")
+          .style("width", "10px")
+          .attr("float", "left")
+          .style("display", "inline-block")
+          .style("background-color", function(d, i) {
+            if (i != breaks.length - 1) {
+              return stops[i][1];
+            } else {
+              return dvc.nullColour;
+            }
+          });
+
+        divs.append("p")
+          .attr("float", "left")
+          .style("padding-left", "5px")
+          .style("margin", "0px")
+          .style("display", "inline-block")
+          .style("position", "relative")
+          .style("top", "-5px")
+          .text(function(d, i) {
+            if (i != breaks.length - 1) {
+              return "" + displayformat(breaks[i]) + "% to " + displayformat(breaks[i + 1] - 1)+"%";
+            } else {
+              return "No Data";
+            }
+          });
+      } // Ends create key
+
+      function addFullscreen() {
+        currentBody = d3.select("#map").style("height");
+        d3.select(".mapboxgl-ctrl-fullscreen").on("click", setbodyheight);
+      }
+
+      function setbodyheight() {
+        d3.select("#map").style("height", "100%");
+
+        document.addEventListener('webkitfullscreenchange', exitHandler, false);
+        document.addEventListener('mozfullscreenchange', exitHandler, false);
+        document.addEventListener('fullscreenchange', exitHandler, false);
+        document.addEventListener('MSFullscreenChange', exitHandler, false);
+
+      }
+
+
+      function exitHandler() {
+        if (document.webkitIsFullScreen === false) {
+          shrinkbody();
+        } else if (document.mozFullScreen === false) {
+          shrinkbody();
+        } else if (document.msFullscreenElement === false) {
+          shrinkbody();
+        }
+      }
+
+      function shrinkbody() {
+        d3.select("#map").style("height", currentBody);
+        pymChild.sendHeight();
+      }
+
+      function geolocate() {
+        dataLayer.push({
+          'event': 'geoLocate',
+          'selected': 'geolocate'
+        });
+
+        var options = {
+          enableHighAccuracy: true,
+          timeout: 5000,
+          maximumAge: 0
+        };
+
+        navigator.geolocation.getCurrentPosition(success, error, options);
+      }
+
+      function getCodes(myPC) {
+
+        //first show the remove cross
+        d3.select(".search-control").append("abbr").attr("class", "postcode");
+
+        dataLayer.push({
+          'event': 'geoLocate',
+          'selected': 'postcode'
+        });
+
+        var myURIstring = encodeURI("https://api.postcodes.io/postcodes/" + myPC);
+        $.support.cors = true;
+        $.ajax({
+          type: "GET",
+          crossDomain: true,
+          dataType: "jsonp",
+          url: myURIstring,
+          error: function(xhr, ajaxOptions, thrownError) {
             d3.select("#keyvalue").text("Enter a valid postcode");
             d3.select("#screenreadertext").text("Enter a valid postcode");
             d3.select("#robo-text").html(function() {
               return 'Please enter a valid postcode'
             });
+          },
+          success: function(data1) {
+            if (data1.status == 200) {
+              if ((data1.result.country=="England") | (data1.result.country=="Wales")) {
+                lat = data1.result.latitude;
+                lng = data1.result.longitude;
+                successpc(lat, lng);
+              } else {
+                d3.select("#keyvalue").text("Enter a valid postcode");
+                d3.select("#screenreadertext").text("Enter a valid postcode");
+                d3.select("#robo-text").html(function() {
+                  return 'Please enter an English or Welsh postcode'
+                });
+              }
+            } else {
+              d3.select("#keyvalue").text("Enter a valid postcode");
+              d3.select("#screenreadertext").text("Enter a valid postcode");
+              d3.select("#robo-text").html(function() {
+                return 'Please enter a valid postcode'
+              });
+            }
           }
-        }
 
-      });
-      pymChild.sendHeight();
-    }
+        });
+        pymChild.sendHeight();
+      }
 
 
-    function successpc(lat, lng) {
-      map.jumpTo({
-        center: [lng, lat],
-        zoom: 12
-      });
-      point = map.project([lng, lat]);
+      function successpc(lat, lng) {
+        map.jumpTo({
+          center: [lng, lat],
+          zoom: 12
+        });
+        point = map.project([lng, lat]);
 
-      setTimeout(function() {
-        var tilechecker = setInterval(function() {
-          features = null;
-          var features = map.queryRenderedFeatures(point, {
-            layers: ['lsoa-boundaries']
-          });
-          if (features.length != 0) {
-            highlightArea(features);
-            disableMouseEvents();
-            addClearBox();
-            clearInterval(tilechecker);
-          }
+        setTimeout(function() {
+          var tilechecker = setInterval(function() {
+            features = null;
+            var features = map.queryRenderedFeatures(point, {
+              layers: ['lsoa-boundaries']
+            });
+            if (features.length != 0) {
+              highlightArea(features);
+              disableMouseEvents();
+              addClearBox();
+              clearInterval(tilechecker);
+            }
+          }, 500);
         }, 500);
-      }, 500);
-    }
+      }
 
-    function onMove(e) {
-      highlightArea(e.features);
-    }
+      function onMove(e) {
+        highlightArea(e.features);
+      }
 
-    setTimeout(function(){
-      let te = [{'id': "E01000001", 'properties': {'AREANM': "City of London 001A", 'AREACD': "E01000001"}}]
-      initHighlightArea(te)
+      setTimeout(function(){
+        let te = [{'id': "E01000001", 'properties': {'AREANM': "City of London 001A", 'AREACD': "E01000001"}}]
+        initHighlightArea(te)
 
-    }, 50);
+      }, 50);
 
-  } //end function ready
-
-} else {
-
-  //provide fallback for browsers that don't support webGL
-  d3.select('#map').remove();
-  d3.select('body').append('p').html("Unfortunately your browser does not support WebGL. <a href='https://www.gov.uk/help/browsers' target='_blank>'>If you're able to please upgrade to a modern browser</a>");
-
-}
+    } //end function ready
+  }else{
+    //provide fallback for browsers that don't support webGL
+    d3.select('#map').remove();
+    d3.select('body').append('p').html("Unfortunately your browser does not support WebGL. <a href='https://www.gov.uk/help/browsers' target='_blank>'>If you're able to please upgrade to a modern browser</a>");
+  }
+}) 
 
 function initHighlightArea(e) {
   setAxisVal(e[0].properties.AREANM, json[e[0].properties.AREACD], e[0].properties.AREACD);
