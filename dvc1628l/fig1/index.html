@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start': new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0], j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})
+  (window,document,'script','dataLayer','GTM-MBCBVQS');
+  </script>
+
+  <meta charset="UTF-8">
+  <title>Energy efficiency</title>
+  <meta name='viewport' content='initial-scale=1' />
+
+  <link href='css/mapbox-gl.css' rel='stylesheet' />
+  <link href='css/bootstrap.min.css' rel='stylesheet' />
+  <link href='css/global.css' rel='stylesheet' />
+  <!-- <link href='css/all.css' rel='stylesheet' />  -->
+  <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+  <link rel="stylesheet" href="css/chosen.css">
+
+  <style>
+    body {
+		margin:0;
+		padding:0;
+		font-family: 'Open Sans', sans-serif;
+		max-width:950px;
+		margin: 0px auto;
+		display:block;
+	}
+
+	#header{
+		height:70px;
+		width:100%
+	}
+
+	.mapboxgl-ctrl-group .mapboxgl-ctrl-compass {
+		display: none;
+	}
+
+
+
+	@media (min-width: 599px) {
+		#map {
+			height: 500px;
+			width: 100%;
+		}
+
+		#selectNav {
+			top:0px;
+			left:0px;
+			height:40px;
+			background-color:rgba(0,0,0,0.8);
+			z-index:1;
+		}
+
+		#keydiv {
+			position:absolute;
+			/* top:40px; */
+			left:0px;
+			width:25%;
+			/* height:80px; */
+			background-color:rgba(255,255,255,0.8);
+			z-index:1;
+      color: #323132;
+      border-bottom-right-radius: 25px;
+		}
+
+		#currVal {
+			font-size:14px;
+
+		}
+	}
+
+  h6 {
+    font-size: 16px;
+    margin: 16px 0 8px 0;
+    font-weight: 700;
+    color: #323132;
+  }
+
+	@media (max-width: 600px) {
+    #keyvalue {
+        display: none;
+    }
+    .mapboxgl-ctrl-bottom-right {
+    right: 0;
+    bottom: 80;
+}
+
+    .map-cont {
+    height: 580px;
+}
+     #source{
+       padding-top: 20px;
+     }
+
+
+    #map {
+			/* position:absolute; */
+			top:0px;
+			/* margin-top:300px; */
+			height: 350px;
+			width: 100%;
+			overflow:visible;
+		}
+
+		#selectNav {
+			/* position:absolute;
+			top:-300px; */
+			left:0px;
+			width:100%;
+			height:40px;
+			/*background-color:rgba(0,0,0,0.8);*/
+			z-index:3;
+		}
+
+		#keydiv {
+			/* position:absolute; */
+			top:-260px;
+			left:0px;
+			/* height:80px; */
+			background-color: rgb(244 245 246 / 80%);
+      color:#323132;
+			z-index:1;
+      margin: 10px;
+      padding: 5px;
+		}
+
+		#currVal {
+			font-size:14px;
+
+		}
+
+div#pcSearch {
+    width: 100%;
+}
+
+    .mapboxgl-ctrl-top-right {
+      bottom: 30;
+      left: 10;
+      top: unset;
+      right: unset;
+  }
+
+
+		.mapboxgl-ctrl-fullscreen {
+			display:none !important;
+		}
+	}
+
+      #map:focus{
+        outline:none;
+        box-shadow: 0 0 0 3px orange;
+      }
+
+      #pcText {
+  			width: 100%;
+  			height:40px;
+  			/* padding: 3px; */
+        /* padding-bottom: 10px; */
+  			color: #999999;
+        font-size: 16px;
+        box-sizing: border-box;
+        border:1px solid #f93;
+      }
+
+      #pcText:focus{
+        border:1px solid #36add9
+      }
+
+
+      /* h6 {
+          font-size: 14px;
+          font-weight: 700;
+          margin: 16px 0 0 0;
+          color:#323132!important;
+      } */
+
+      .btnEnable {
+          -moz-box-sizing: border-box;
+          box-sizing: border-box;
+          width: 40px;
+          height: 40px;
+          border: none;
+          padding: 0px 0!important;
+          background-color: #0075A3;
+          font: 700 16px Arial;
+          color: #FFF;
+          filter: inherit;
+          -webkit-appearance: button;
+          cursor: pointer;
+      }
+     .btn--primary {
+       background-color: #0F8243;
+       color: #fff!important;
+     }
+     .btn {
+         font-family: "Open Sans",Helvetica,Arial,sans-serif;
+         font-weight: 400;
+         font-size: 14px;
+         display: inline-block;
+         width: auto;
+         cursor: pointer;
+         padding: 6px 16px 10px 16px;
+         border: 0 none;
+         text-align: center;
+         -webkit-appearance: none;
+         transition: background-color 0.25s ease-out;
+         line-height: 24px;
+     }
+
+     a {
+         text-decoration: underline;
+         color: #206095;
+         word-wrap: break-word;
+     }
+
+     #keyvalue{
+       font-weight:700;
+       height:70px;
+       line-height: 1.3em;
+     }
+
+    .clear {
+      position: absolute;
+      top: 4px;
+      right: 4px;
+      width: 20px;
+      height: 20px;
+      border-radius: 10px;
+      display: none;
+      text-indent: -999em;
+      background: #fff0 url(./images/closeblue.svg) no-repeat right -15px center;
+      background-position-x: 0px;
+      background-position-y: 0px;
+      overflow: hidden;
+      border:none;
+    }
+
+    .clear:focus{
+      box-shadow: 0 0 0 3px orange;
+      outline:none;
+    }
+
+    div#robo-text {
+    color: black;
+    display: inline-block;
+    padding-top: 18px;
+    padding-bottom: 18px;
+  }
+  span#content {
+    color: pink
+  }
+  div#pcSearch {
+      background: #20609540;
+      width: 105%;
+      padding: 18px;
+  }
+  p#searchLabel {
+      font-size: x-large !important;
+      color: #206095;
+      font-weight: bold;
+  }
+  span#blue {
+    color: #206095
+  }
+  span#end {
+      color: white;
+  }
+  #robo-text > p {
+    font-size: 18px;
+    font-weight: 400;
+    line-height: 32px;
+    margin: 0 0 24px 0;
+    padding: 0;
+  }
+  input:-internal-autofill-selected {
+    appearance: menulist-button;
+    background-image: none !important;
+    background-color: white !important;
+    color: white !important;
+}
+/* Change the white to any color */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active{
+    -webkit-box-shadow: 0 0 0 30px white inset !important;
+}
+input {
+  transition: none !important;
+}
+.clear {
+  display: none;
+}
+
+.icon-search--light {
+  background-position: -74px -387px;
+  height: 24px;
+  width: 32px;
+}
+
+.icon {
+  background-image: url(https://cdn.ons.gov.uk/assets/images/icon-sprite/v2/icon-sprite.svg);
+  background-repeat: no-repeat;
+  display: inline-block;
+  background-size: 300px 1000px;
+}
+</style>
+
+</head>
+
+<body>
+  <p class='visuallyhidden' aria-live="assertive" id="screenreadertext"></p>
+  <div id="content-cont">
+    <div id="text-cont">
+      <div id="pcSearch" style="float: left">
+        <p id="searchLabel" style="font-size: medium; color: #206095;">Explore the energy efficiency of homes in your area</p>
+        <div id="search-cont">
+          <div id='selectNav'>
+            <div class="input-group">
+              <label class='visuallyhidden' for="postcodeInput">Type to enter a postcode</label>
+              <input id="postcodeInput" type="text" class="search-control clearable" placeholder="Enter a postcode">
+              <div class="input-group-addon search-group">
+                <button id="submitPost" type="submit" style="background: none;border:0;">
+                  <span class="visuallyhidden">Postcode search</span>
+                  <span class="icon icon-search--light"></span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id="robo-text">
+        <p><strong>Just under 4 in 10 homes (39%) in this part of the City of London have an EPC rating of C or above</strong> —considerably less than the average across London (49%).</p>
+        <p><strong>Across the City of London, 22% of homes were constructed before 1900, and, 12% were constructed in 2012 or later.</p>
+      </div>
+    </div>
+    <div class="map-cont">
+      <div id='map'>
+        <div aria-hidden="true" id='keydiv'></div>
+      </div>
+    </div>
+    <div id="source">
+      <h6>Source: Department for Levelling Up, Housing and Communities – Energy Performance Certificate data on Open Data Communities; Valuations Office Agency, Council Tax: stock of properties, 2021</h6>
+    </div>
+  </div>
+
+  <script src="https://cdn.ons.gov.uk/vendor/d3/4.2.7/d3.min.js"></script>
+  <script src="https://cdn.ons.gov.uk/vendor/pym/1.3.2/pym.min.js"></script>
+  <script src="./js/simple-statistics.min.js"></script>
+  <script src="./js/modernizr.min.js"></script>
+  <script src="./js/d3-queue.min.js"></script>
+  <script src="./js/colorbrewer.js"></script>
+  <script src="https://cdn.ons.gov.uk/vendor/jquery/2.1.4/jquery.min.js"></script>
+  <script src="./js/chosen.jquery.js"></script>
+  <script src="./js/limit.js"></script>
+  <script src="./js/mapbox-gl.js"></script>
+  <script src="./js/script.js"></script>
+  <script src="./js/rosaenlg_tiny_en_US_3.0.1_comp.js"></script>
+
+  <noscript>
+    <p>Your browser does not support JavaScript. If you're able to please enable Javascript to view the map.</p>
+  </noscript>
+
+</body>
+
+</html>

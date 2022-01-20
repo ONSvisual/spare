@@ -1,0 +1,24 @@
+{
+  "essential": {
+    "graphic_data_url": "data.csv",
+    "colour_palette": ["#206095", "#118C7B", "#003C57", "#A8BD3A", "#27A0CC"],
+    "accessibleSummary":"Transport and storage businesses are most likely to cite a lack of EU applicants when unable to fill vacancies",
+    "sourceText":["Department for Levelling Up, Housing and Communities – Energy Performance Certificate data on Open Data Communities"],
+    "numberFormat":".0%",
+    "xAxisScale": [0,1],
+    "barHeight": {
+      "sm": 30,
+      "md": 30,
+      "lg": 40
+    },
+    "margin":{
+      "sm":{"top":15,"right":0,"bottom":25,"left":120},
+      "md":{"top":15,"right":0,"bottom":25,"left":135},
+      "lg":{"top":15,"right":0,"bottom":0,"left":135}
+    }
+  },
+  "optional": {
+    "mobileBreakpoint": 414,
+    "middleBreakpoint": 600
+  }
+}
