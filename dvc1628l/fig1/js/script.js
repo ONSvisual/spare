@@ -68,11 +68,9 @@ Modernizr.on('webgl',function(results){
       });
 
       getCodes('EC1A 4HJ')
-      var width;
+      width = parseInt(d3.select('body').style('width')); //this will get the width of your screen.;
 
       $(window).ready(function() {
-        //this will get the default screen width
-        width = parent.document.body.clientWidth; //this will get the width of your screen.
         if (width>767) {
           $("#robo-text > p").css({"font-size": "18px"});
           $("#text-cont").css({"margin-left": "16px !important", "margin-right": "48px", "width": "640px"});
@@ -84,7 +82,6 @@ Modernizr.on('webgl',function(results){
       });
 
       var intervalId = window.setInterval(function(){
-        width = parent.document.body.clientWidth;
         if (width>767) {
           $("#robo-text > p").css({"font-size": "18px"});
           $("#text-cont").css({"margin-left": "16px !important", "margin-right": "48px", "width": "640px"});
@@ -574,140 +571,134 @@ Modernizr.on('webgl',function(results){
 
       }, 50);
 
-    } //end function ready
-  }else{
-    //provide fallback for browsers that don't support webGL
-    d3.select('#map').remove();
-    d3.select('body').append('p').html("Unfortunately your browser does not support WebGL. <a href='https://www.gov.uk/help/browsers' target='_blank>'>If you're able to please upgrade to a modern browser</a>");
-  }
-}) 
-
-function initHighlightArea(e) {
-  setAxisVal(e[0].properties.AREANM, json[e[0].properties.AREACD], e[0].properties.AREACD);
-  setScreenreader(e[0].properties.AREANM, json[e[0].properties.AREACD]);
-
-  if (e.length > 0) {
-    if (hoveredId) {
-      map.setFeatureState({
-        source: 'lsoa-tiles',
-        sourceLayer: 'boundaries',
-        id: hoveredId
-      }, {
-        hover: false
-      });
-    }
-
-    hoveredId = e[0].id;
-
-    setTimeout(function(){
-      map.setFeatureState({
-        source: 'lsoa-tiles',
-        sourceLayer: 'boundaries',
-        id: hoveredId
-      }, {
-        hover: true
-      });
-    }, 700);
-  }
-}
 
 
-function highlightArea(e) {
-  setAxisVal(e[0].properties.AREANM, json[e[0].properties.AREACD], e[0].properties.AREACD);
-  setScreenreader(e[0].properties.AREANM, json[e[0].properties.AREACD]);
+    function initHighlightArea(e) {
+      setAxisVal(e[0].properties.AREANM, json[e[0].properties.AREACD], e[0].properties.AREACD);
+      setScreenreader(e[0].properties.AREANM, json[e[0].properties.AREACD]);
 
-  if (e.length > 0) {
-    if (hoveredId) {
-      map.setFeatureState({
-        source: 'lsoa-tiles',
-        sourceLayer: 'boundaries',
-        id: hoveredId
-      }, {
-        hover: false
-      });
-    }
+      if (e.length > 0) {
+        if (hoveredId) {
+          map.setFeatureState({
+            source: 'lsoa-tiles',
+            sourceLayer: 'boundaries',
+            id: hoveredId
+          }, {
+            hover: false
+          });
+        }
 
-    hoveredId = e[0].id;
+        hoveredId = e[0].id;
 
-    map.setFeatureState({
-      source: 'lsoa-tiles',
-      sourceLayer: 'boundaries',
-      id: hoveredId
-    }, {
-      hover: true
-    });
-  }
-}
-
-function unhighlightArea(){
-  if (hoveredId) {
-    map.setFeatureState({
-      source: 'lsoa-tiles',
-      sourceLayer: 'boundaries',
-      id: hoveredId
-    }, {
-      hover: false
-    });
-  }
-  hoveredId = null;
-}
-
-
-function generateBreaks(data, dvc) {
-  if (!Array.isArray(dvc.breaks)) {
-    values = data.map(function(d) {
-      return +d.value;
-    }).filter(function(d) {
-      if (!isNaN(d)) {
-        return d;
+        setTimeout(function(){
+          map.setFeatureState({
+            source: 'lsoa-tiles',
+            sourceLayer: 'boundaries',
+            id: hoveredId
+          }, {
+            hover: true
+          });
+        }, 700);
       }
-    }).sort(d3.ascending);
-  }
+    }
 
 
-  if (dvc.breaks == "jenks") {
-    breaks = [];
+    function highlightArea(e) {
+      setAxisVal(e[0].properties.AREANM, json[e[0].properties.AREACD], e[0].properties.AREACD);
+      setScreenreader(e[0].properties.AREANM, json[e[0].properties.AREACD]);
 
-    ss.ckmeans(values, (dvc.numberBreaks)).map(function(cluster, i) {
-      if (i < dvc.numberBreaks - 1) {
-        breaks.push(cluster[0]);
+      if (e.length > 0) {
+        if (hoveredId) {
+          map.setFeatureState({
+            source: 'lsoa-tiles',
+            sourceLayer: 'boundaries',
+            id: hoveredId
+          }, {
+            hover: false
+          });
+        }
+
+        hoveredId = e[0].id;
+
+        map.setFeatureState({
+          source: 'lsoa-tiles',
+          sourceLayer: 'boundaries',
+          id: hoveredId
+        }, {
+          hover: true
+        });
+      }
+    }
+
+    function unhighlightArea(){
+      if (hoveredId) {
+        map.setFeatureState({
+          source: 'lsoa-tiles',
+          sourceLayer: 'boundaries',
+          id: hoveredId
+        }, {
+          hover: false
+        });
+      }
+      hoveredId = null;
+    }
+
+
+    function generateBreaks(data, dvc) {
+      if (!Array.isArray(dvc.breaks)) {
+        values = data.map(function(d) {
+          return +d.value;
+        }).filter(function(d) {
+          if (!isNaN(d)) {
+            return d;
+          }
+        }).sort(d3.ascending);
+      }
+
+
+      if (dvc.breaks == "jenks") {
+        breaks = [];
+
+        ss.ckmeans(values, (dvc.numberBreaks)).map(function(cluster, i) {
+          if (i < dvc.numberBreaks - 1) {
+            breaks.push(cluster[0]);
+          } else {
+            breaks.push(cluster[0]);
+            //if the last cluster take the last max value
+            breaks.push(cluster[cluster.length - 1]);
+          }
+        });
+      } else if (dvc.breaks == "equal") {
+        breaks = ss.equalIntervalBreaks(values, dvc.numberBreaks);
       } else {
-        breaks.push(cluster[0]);
-        //if the last cluster take the last max value
-        breaks.push(cluster[cluster.length - 1]);
+        breaks = dvc.breaks;
       }
-    });
-  } else if (dvc.breaks == "equal") {
-    breaks = ss.equalIntervalBreaks(values, dvc.numberBreaks);
-  } else {
-    breaks = dvc.breaks;
-  }
 
-  //round breaks to specified decimal places
-  breaks = breaks.map(function(each_element) {
-    return Number(each_element.toFixed(dvc.legenddecimals));
-  });
+      //round breaks to specified decimal places
+      breaks = breaks.map(function(each_element) {
+        return Number(each_element.toFixed(dvc.legenddecimals));
+      });
 
-  return breaks;
-}
+      return breaks;
+    }
 
-function onLeave() {
-  if (hoveredId) {
-    map.setFeatureState({
-      source: 'lsoa-tiles',
-      sourceLayer: 'boundaries',
-      id: hoveredId
-    }, {
-      hover: false
-    });
-  }
-  hoveredId = null;
-}
+    function onLeave() {
+      if (hoveredId) {
+        map.setFeatureState({
+          source: 'lsoa-tiles',
+          sourceLayer: 'boundaries',
+          id: hoveredId
+        }, {
+          hover: false
+        });
+      }
+      hoveredId = null;
+    }
 
-function setAxisVal(areanm, areaval, areacd) {
-  d3.select("#robo-text").html(function() {
-    if (!isNaN(areaval)) {
-      let string = `
+    function setAxisVal(areanm, areaval, areacd) {
+      d3.select("#robo-text").html(function() {
+        if (!isNaN(areaval)) {
+          let string = `
 mixin para1
   strong
     | #[+value(fracWord[0])]
@@ -827,99 +818,107 @@ mixin para2
 p #[+para1]
 p #[+age]
 `
-      var lastIndex = areanm.lastIndexOf(" ");
-      let loc = areanm.substring(0, lastIndex)
-      let frac = Math.round(areaval*10)/1000
+          var lastIndex = areanm.lastIndexOf(" ");
+          let loc = areanm.substring(0, lastIndex)
+          let frac = Math.round(areaval*10)/1000
 
-      let fraction_map = {'one in two': 0.5, 'one in three': 0.333, 'one in four': 0.25, 'one in five': 0.2, 'one in six': 0.167, 'one in seven': 0.143, 'one in eight': 0.125, 'one in nine': 0.111, '1 in 10': 0.1,'1 in 11' : 0.09, '1 in 12' : 0.083, '1 in 13' : 0.077, '1 in 14' : 0.071, '1 in 15' : 0.067, '1 in 16' : 0.063, '1 in 17' : 0.059, '1 in 18' : 0.056, '1 in 19' : 0.053 ,'1 in 20': 0.05, '2 in 10': 0.2, '3 in 10': 0.3, '4 in 10': 0.4, '6 in 10': 0.6, '7 in 10': 0.7, '8 in 10': 0.8, '9 in 10': 0.9, 'all': 1.0}
-      let OverUnder;
-      function get_word(fraction) {
-          let lowest = 2;
-          let lowest_label;
-          for (const label in fraction_map) {
-              if (Math.abs(fraction-fraction_map[label])<lowest) {
-                  lowest = Math.abs(fraction-fraction_map[label])
-                  lowest_label = label
-                  if (fraction-fraction_map[label]==0) {
-                      OverUnder = "About ";
-                  }
-                  else if (fraction-fraction_map[label]>0) {
-                      OverUnder = "Just over ";
-                  }
-                  else if (fraction-fraction_map[label]<0) {
-                      OverUnder = "Just under ";
-                  } } }
-          return [OverUnder, lowest_label]
-      }
+          let fraction_map = {'one in two': 0.5, 'one in three': 0.333, 'one in four': 0.25, 'one in five': 0.2, 'one in six': 0.167, 'one in seven': 0.143, 'one in eight': 0.125, 'one in nine': 0.111, '1 in 10': 0.1,'1 in 11' : 0.09, '1 in 12' : 0.083, '1 in 13' : 0.077, '1 in 14' : 0.071, '1 in 15' : 0.067, '1 in 16' : 0.063, '1 in 17' : 0.059, '1 in 18' : 0.056, '1 in 19' : 0.053 ,'1 in 20': 0.05, '2 in 10': 0.2, '3 in 10': 0.3, '4 in 10': 0.4, '6 in 10': 0.6, '7 in 10': 0.7, '8 in 10': 0.8, '9 in 10': 0.9, 'all': 1.0}
+          let OverUnder;
+          function get_word(fraction) {
+              let lowest = 2;
+              let lowest_label;
+              for (const label in fraction_map) {
+                  if (Math.abs(fraction-fraction_map[label])<lowest) {
+                      lowest = Math.abs(fraction-fraction_map[label])
+                      lowest_label = label
+                      if (fraction-fraction_map[label]==0) {
+                          OverUnder = "About ";
+                      }
+                      else if (fraction-fraction_map[label]>0) {
+                          OverUnder = "Just over ";
+                      }
+                      else if (fraction-fraction_map[label]<0) {
+                          OverUnder = "Just under ";
+                      } } }
+              return [OverUnder, lowest_label]
+          }
 
-      let array = ['South East', 'South West', 'East', 'West Midlands', 'East Midlands', 'North East', 'North West']
+          let array = ['South East', 'South West', 'East', 'West Midlands', 'East Midlands', 'North East', 'North West']
 
-      function regionThe(place) {
-        let placeNew = 'empty'
-        if (array.includes(place)) {
-          placeNew = 'the ' + place;
+          function regionThe(place) {
+            let placeNew = 'empty'
+            if (array.includes(place)) {
+              placeNew = 'the ' + place;
+            } else {
+              placeNew = place;
+            }
+            return placeNew;
+          }
+
+          return rosaenlg_en_US.render(string, {
+            language: 'en_UK',
+            loc: loc,
+            frac: frac,
+            fracWord: get_word(frac),
+            b1900: dateLookup[areacd].b1900,
+            a2012: dateLookup[areacd].a2012,
+            la: regionLookup[areacd].lName,
+            country: regionLookup[areacd].country,
+            parent: regionThe(regionLookup[areacd].rName),
+            deprivation: decileEPC[regionLookup[areacd].country][regionLookup[areacd].decile],
+            regionaVal: regionEPC[regionLookup[areacd].rName],
+            diff: frac-regionEPC[regionLookup[areacd].rName],
+            decile: regionLookup[areacd].decile
+          });
         } else {
-          placeNew = place;
+          return areanm + "<br>No data available";
         }
-        return placeNew;
-      }
+        pymChild.sendHeight();
 
-      return rosaenlg_en_US.render(string, {
-        language: 'en_UK',
-        loc: loc,
-        frac: frac,
-        fracWord: get_word(frac),
-        b1900: dateLookup[areacd].b1900,
-        a2012: dateLookup[areacd].a2012,
-        la: regionLookup[areacd].lName,
-        country: regionLookup[areacd].country,
-        parent: regionThe(regionLookup[areacd].rName),
-        deprivation: decileEPC[regionLookup[areacd].country][regionLookup[areacd].decile],
-        regionaVal: regionEPC[regionLookup[areacd].rName],
-        diff: frac-regionEPC[regionLookup[areacd].rName],
-        decile: regionLookup[areacd].decile
       });
-    } else {
-      return areanm + "<br>No data available";
+
+      d3.select("#keyvalue").html(function() {
+        if (!isNaN(areaval)) {
+          return areanm + "<br>" + "" + displayformat(areaval)+"%";
+        } else {
+          return areanm + "<br>No data available";
+        }
+      });
     }
-    pymChild.sendHeight();
 
-  });
-
-  d3.select("#keyvalue").html(function() {
-    if (!isNaN(areaval)) {
-      return areanm + "<br>" + "" + displayformat(areaval)+"%";
-    } else {
-      return areanm + "<br>No data available";
+    function setScreenreader(name, value) {
+      if (!isNaN(value)) {
+        d3.select("#screenreadertext").text("The average house price paid in " + name + " is £" + d3.format(",")(value));
+      } else {
+        d3.select("#screenreadertext").text("There is no data available for " + name);
+      }
     }
-  });
-}
 
-function setScreenreader(name, value) {
-  if (!isNaN(value)) {
-    d3.select("#screenreadertext").text("The average house price paid in " + name + " is £" + d3.format(",")(value));
-  } else {
-    d3.select("#screenreadertext").text("There is no data available for " + name);
+    function hideaxisVal() {
+      d3.select("#keyvalue").style("font-weight", "bold").text("");
+      d3.select("#screenreadertext").text("");
+    }
+
+    function getColour(value) {
+      return isNaN(value) ? dvc.nullColour : color(value);
+    }
+
+    function csv2json(csv) {
+      var json = {},
+        i = 0,
+        len = csv.length;
+      while (i < len) {
+        json[csv[i][csv.columns[0]]] = +csv[i][csv.columns[1]];
+        json[csv[i][csv.columns[0]]] = +csv[i][csv.columns[1]];
+        i++;
+      }
+      return json;
+    }
+
+  } //end function ready
+  }else{
+    //provide fallback for browsers that don't support webGL
+    d3.select('#map').remove();
+    d3.select('body').append('p').html("Unfortunately your browser does not support WebGL. <a href='https://www.gov.uk/help/browsers' target='_blank>'>If you're able to please upgrade to a modern browser</a>");
   }
-}
-
-function hideaxisVal() {
-  d3.select("#keyvalue").style("font-weight", "bold").text("");
-  d3.select("#screenreadertext").text("");
-}
-
-function getColour(value) {
-  return isNaN(value) ? dvc.nullColour : color(value);
-}
-
-function csv2json(csv) {
-  var json = {},
-    i = 0,
-    len = csv.length;
-  while (i < len) {
-    json[csv[i][csv.columns[0]]] = +csv[i][csv.columns[1]];
-    json[csv[i][csv.columns[0]]] = +csv[i][csv.columns[1]];
-    i++;
-  }
-  return json;
-}
+})
