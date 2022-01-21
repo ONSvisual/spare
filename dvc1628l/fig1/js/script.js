@@ -58,11 +58,11 @@ Modernizr.on('webgl',function(results){
       //turn csv data into json format
       json = csv2json(epcs);
 
-      lsoaRegion.forEach(d => {
+      lsoaRegion.forEach(function(d){
         regionLookup[d['lsoa11cd']] = {'rName': d['Region'], 'rCode': d['RGN11CD'], 'lName': d['LA name'], 'lCode': d['LA code'], 'decile': d['Deprivation decile'], 'name': d['LSOA name'], 'country': d['Country']};
       });
 
-      epcs.forEach(d => {
+      epcs.forEach(function(d){
         dateLookup[d['areacd']] = {'value': +d['value'], 'b1900': d['b1900']/100, 'a2012': d['a2012']/100 }
       });
 
@@ -518,7 +518,7 @@ Modernizr.on('webgl',function(results){
       }
 
       setTimeout(function(){
-        let te = [{'id': "E01000001", 'properties': {'AREANM': "City of London 001A", 'AREACD': "E01000001"}}]
+        var te = [{'id': "E01000001", 'properties': {'AREANM': "City of London 001A", 'AREACD': "E01000001"}}]
         initHighlightArea(te)
 
       }, 50);
@@ -650,7 +650,7 @@ Modernizr.on('webgl',function(results){
     function setAxisVal(areanm, areaval, areacd) {
       d3.select("#robo-text").html(function() {
         if (!isNaN(areaval)) {
-          let string = `
+          var string = `
 mixin para1
   strong
     | #[+value(fracWord[0])]
@@ -771,15 +771,15 @@ p #[+para1]
 p #[+age]
 `
           var lastIndex = areanm.lastIndexOf(" ");
-          let loc = areanm.substring(0, lastIndex)
-          let frac = Math.round(areaval*10)/1000
+          var loc = areanm.substring(0, lastIndex)
+          var frac = Math.round(areaval*10)/1000
 
-          let fraction_map = {'one in two': 0.5, 'one in three': 0.333, 'one in four': 0.25, 'one in five': 0.2, 'one in six': 0.167, 'one in seven': 0.143, 'one in eight': 0.125, 'one in nine': 0.111, '1 in 10': 0.1,'1 in 11' : 0.09, '1 in 12' : 0.083, '1 in 13' : 0.077, '1 in 14' : 0.071, '1 in 15' : 0.067, '1 in 16' : 0.063, '1 in 17' : 0.059, '1 in 18' : 0.056, '1 in 19' : 0.053 ,'1 in 20': 0.05, '2 in 10': 0.2, '3 in 10': 0.3, '4 in 10': 0.4, '6 in 10': 0.6, '7 in 10': 0.7, '8 in 10': 0.8, '9 in 10': 0.9, 'all': 1.0}
-          let OverUnder;
+          var fraction_map = {'one in two': 0.5, 'one in three': 0.333, 'one in four': 0.25, 'one in five': 0.2, 'one in six': 0.167, 'one in seven': 0.143, 'one in eight': 0.125, 'one in nine': 0.111, '1 in 10': 0.1,'1 in 11' : 0.09, '1 in 12' : 0.083, '1 in 13' : 0.077, '1 in 14' : 0.071, '1 in 15' : 0.067, '1 in 16' : 0.063, '1 in 17' : 0.059, '1 in 18' : 0.056, '1 in 19' : 0.053 ,'1 in 20': 0.05, '2 in 10': 0.2, '3 in 10': 0.3, '4 in 10': 0.4, '6 in 10': 0.6, '7 in 10': 0.7, '8 in 10': 0.8, '9 in 10': 0.9, 'all': 1.0}
+          var OverUnder;
           function get_word(fraction) {
-              let lowest = 2;
-              let lowest_label;
-              for (const label in fraction_map) {
+              var lowest = 2;
+              var lowest_label;
+              for (var label in fraction_map) {
                   if (Math.abs(fraction-fraction_map[label])<lowest) {
                       lowest = Math.abs(fraction-fraction_map[label])
                       lowest_label = label
@@ -795,10 +795,10 @@ p #[+age]
               return [OverUnder, lowest_label]
           }
 
-          let array = ['South East', 'South West', 'East', 'West Midlands', 'East Midlands', 'North East', 'North West']
+          var array = ['South East', 'South West', 'East', 'West Midlands', 'East Midlands', 'North East', 'North West']
 
           function regionThe(place) {
-            let placeNew = 'empty'
+            var placeNew = 'empty'
             if (array.includes(place)) {
               placeNew = 'the ' + place;
             } else {
