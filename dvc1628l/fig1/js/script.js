@@ -668,7 +668,7 @@ mixin para1
     | have an EPC rating of C or above
   strong
   if (Math.abs(diff)>0.08)
-    | — considerably
+    |— considerably
     if (diff<0)
       | less than
     else
@@ -680,7 +680,7 @@ mixin para1
     else
       | more than
   else if (Math.abs(diff)>0.01)
-    |—slightly
+    |— slightly
     if (diff<0)
       | less than
     else
