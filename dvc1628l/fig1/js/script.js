@@ -69,53 +69,6 @@ Modernizr.on('webgl',function(results){
       getCodes('EC1A 4HJ')
       width = parseInt(d3.select('body').style('width')); //this will get the width of your screen.;
 
-      $(window).ready(function() {
-        if (width>767) {
-          $("#robo-text > p").css({"font-size": "18px"});
-          $("#text-cont").css({"margin-left": "16px !important", "margin-right": "48px", "width": "640px"});
-        }
-        if (width>991) {
-          $("#text-cont").css({"margin-right": "32px"});
-        }
-        pymChild.sendHeight();
-      });
-
-      var intervalId = window.setInterval(function(){
-        if (width>767) {
-          $("#robo-text > p").css({"font-size": "18px"});
-          $("#text-cont").css({"margin-left": "16px !important", "margin-right": "48px", "width": "640px"});
-        }
-        if (width>991) {
-          $("#text-cont").css({"margin-right": "32px"});
-        }
-        if (width<768) {
-          $("#robo-text > p").css({"font-size": "16px"});
-          $("#text-cont").css({"margin-left": "0px", "margin-right": "0px", "width": "100%"});
-        }
-        pymChild.sendHeight();
-      }, 500);
-
-
-      //this is when you resize the screen
-      $(parent.window).resize(function() {
-        width = parent.document.body.clientWidth;
-        //this will get the width when you resize the screen.
-
-        if ((width>767)&(width<992)) {
-          $("#robo-text > p").css({"font-size": "18px"});
-          $("#text-cont").css({"margin-left": "16px !important", "margin-right": "48px", "width": "640px"});
-        }
-        if (width>991) {
-          $("#text-cont").css({"margin-right": "32px"});
-        }
-        if (width<768) {
-          $("#robo-text > p").css({"font-size": "16px"});
-          $("#text-cont").css({"margin-left": "0px", "margin-right": "0px", "width": "100%"});
-        }
-        pymChild.sendHeight();
-      });
-
-
 
       //Set up global variables
       dvc = config.ons;
@@ -715,7 +668,7 @@ mixin para1
     | have an EPC rating of C or above
   strong
   if (Math.abs(diff)>0.08)
-    |—considerably
+    | — considerably
     if (diff<0)
       | less than
     else
@@ -913,7 +866,7 @@ p #[+age]
       }
       return json;
     }
-
+    pymChild.sendHeight();
   } //end function ready
   }else{
     //provide fallback for browsers that don't support webGL
